@@ -19,8 +19,9 @@ calculateOverlapNum = 20
 G = nx.gnp_random_graph(N, p_inner, directed=True)
 initial_active = np.random.choice(N, initial_active_count, replace=False)
 
-def simulate_ca3_network(init_delta, increase=0,interval = 0 , plot=True, save=False, save_prefix="delta_run",):
+def simulate_ca3_network(init_delta, increase=0.00 ,interval = 1 , plot=True, save=False, save_prefix="delta_run",):
     activation_per_step = []
+    interval = max(interval, 1)  #   //避免interval为0出错
 
     # 初始化状态
     active = np.zeros(N, dtype=bool)
@@ -158,8 +159,8 @@ def plot_overlap_ratios_multi_delta(deltas,delta_increase = [0.00], intervals=[0
 
     plt.figure(figsize=(15, 8))
 
-    for j, delta in enumerate(deltas):
-        for i, increase in enumerate(delta_increase):
+    for _, delta in enumerate(deltas):
+        for _, increase in enumerate(delta_increase):
             for interval in intervals:
                 print("begin to run interval case")
                 overlap_ratios = [0]
@@ -174,39 +175,39 @@ def plot_overlap_ratios_multi_delta(deltas,delta_increase = [0.00], intervals=[0
                     marker='o', markersize=3, linewidth=0.8,
                     label=f'initial_δ={delta:.3f},inc={increase:.3f},interval={interval}'
                 )
-    for j, delta in enumerate(deltas):
-        for i, increase in enumerate(delta_increase):
-            for interval in intervals:
-                print("begin to run non-interval case")
-                overlap_ratios = [0]
-                overlap_ratio, activation,tN_list = simulate_ca3_network(delta, increase, 0)
-                overlap_ratios.extend(overlap_ratio)
-
-                while (len(overlap_ratios) < len(stempsDrawCounter)):
-                    overlap_ratios.append(1)
-
-                plt.plot(
-                    stempsDrawCounter, overlap_ratios,
-                    marker='o', markersize=3, linewidth=0.8,
-                    label=f'initial_δ={delta:.3f},inc={increase:.3f},interval={0}'
-                )
-    overlap_ratio_list=[]
-    while len(tN_list)<len(tN_list_interval):
-        tN_list.append(tN_list[len(tN_list)-1])
-    for i in range(len(tN_list_interval) ):
-        set_tN = set(tN_list[i])
-        set_interval = set(tN_list_interval[i])
-        # print(f"[{i}]")
-        # print("tN:", sorted(set_tN))
-        # print("interval:", sorted(set_interval))
-        ratio = len(set_tN.intersection(set_interval)) / calculateOverlapNum
-        overlap_ratio_list.append(ratio)
-        N = len(overlap_ratio_list)
-    plt.plot(
-             stempsDrawCounter[:N], overlap_ratio_list,
-             marker='o', markersize=3, linewidth=0.8,
-        label=f'插入神经元与不插入神经元累计激活最多神经元的重合率'
-    )
+    # for j, delta in enumerate(deltas):
+    #     for i, increase in enumerate(delta_increase):
+    #         for interval in intervals:
+    #             print("begin to run non-interval case")
+    #             overlap_ratios = [0]
+    #             overlap_ratio, activation,tN_list = simulate_ca3_network(delta, increase, 0)
+    #             overlap_ratios.extend(overlap_ratio)
+    #
+    #             while (len(overlap_ratios) < len(stempsDrawCounter)):
+    #                 overlap_ratios.append(1)
+    #
+    #             plt.plot(
+    #                 stempsDrawCounter, overlap_ratios,
+    #                 marker='o', markersize=3, linewidth=0.8,
+    #                 label=f'initial_δ={delta:.3f},inc={increase:.3f},interval={0}'
+    #             )
+    # overlap_ratio_list=[]
+    # while len(tN_list)<len(tN_list_interval):
+    #     tN_list.append(tN_list[len(tN_list)-1])
+    # for i in range(len(tN_list_interval) ):
+    #     set_tN = set(tN_list[i])
+    #     set_interval = set(tN_list_interval[i])
+    #     # print(f"[{i}]")
+    #     # print("tN:", sorted(set_tN))
+    #     # print("interval:", sorted(set_interval))
+    #     ratio = len(set_tN.intersection(set_interval)) / calculateOverlapNum
+    #     overlap_ratio_list.append(ratio)
+    #     N = len(overlap_ratio_list)
+    # plt.plot(
+    #          stempsDrawCounter[:N], overlap_ratio_list,
+    #          marker='o', markersize=3, linewidth=0.8,
+    #     label=f'插入神经元与不插入神经元累计激活最多神经元的重合率'
+    # )
 
 
     plt.xlabel("迭代次数")

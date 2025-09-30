@@ -1,6 +1,6 @@
-./delt=0.1/*
-./delt=0.2/*
-./.idea/*
-./.venv/*
-./.vscode/*
-./*.png
+delt=0.1/*
+delt=0.2/*
+.idea/*
+.venv/*
+.vscode/*
+*.png
